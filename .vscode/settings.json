@@ -1,0 +1,12 @@
+{
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true,
+        },
+        "editor.formatOnSave": true,
+        "editor.formatOnSaveMode": "file",
+        "editor.defaultFormatter": "ms-python.black-formatter",
+    },
+    "C_Cpp.clang_format_fallbackStyle": "Mozilla",
+    "fortran.formatting.formatter": "findent"
+}
