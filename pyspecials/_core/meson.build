@@ -14,10 +14,22 @@
 
 toms708_sources = ['toms708/bratio.f', 'toms708/bratio.c']
 
+src_bratio_doc_h = custom_target('toms708_doc_generated',
+  output : 'toms708_doc_generated.h',
+  input : 'toms708/bratio_docstrings.py',
+  command: [py, '@INPUT@', '-o', '@OUTPUT@'],
+)
+
+c_args = [
+  '-DPYSPECIALS_DOC_GENERATED',
+]
+
 py.extension_module('toms708',
   [
+    src_bratio_doc_h,
     toms708_sources,
   ],
+  c_args: c_args,
   dependencies: py_dep,
   include_directories: np_inc,
   install: true,

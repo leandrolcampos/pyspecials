@@ -22,6 +22,14 @@
 #include "numpy/ndarraytypes.h"
 #include "numpy/ufuncobject.h"
 
+#ifndef PYSPECIALS_DOC_GENERATED
+#define STRINGIZE(x) #x
+#define UFUNC_DOC(NAME) STRINGIZE(NAME##_docstring)
+#else
+#include "toms708_doc_generated.h"
+#define UFUNC_DOC(NAME) DOC_##NAME
+#endif
+
 /* ---------------------- Fortran function declaration ---------------------- */
 
 extern void
@@ -169,23 +177,20 @@ typedef struct ufunc_descriptor_struct
   const char* doc;
 } UFUNC_DESCRIPTOR_t;
 
-UFUNC_DESCRIPTOR_t ufunc_descriptors[] = {
-  { FUNC_ARRAY_NAME(betainc),
-    double_4_times,
-    1,
-    3,
-    1,
-    "betainc",
-    "Computes the regularized incomplete beta function element-wise." },
-  { FUNC_ARRAY_NAME(betaincc),
-    double_4_times,
-    1,
-    3,
-    1,
-    "betaincc",
-    "Computes the complement of the regularized incomplete beta function "
-    "element-wise." }
-};
+UFUNC_DESCRIPTOR_t ufunc_descriptors[] = { { FUNC_ARRAY_NAME(betainc),
+                                             double_4_times,
+                                             1,
+                                             3,
+                                             1,
+                                             "betainc",
+                                             UFUNC_DOC(betainc) },
+                                           { FUNC_ARRAY_NAME(betaincc),
+                                             double_4_times,
+                                             1,
+                                             3,
+                                             1,
+                                             "betaincc",
+                                             UFUNC_DOC(betaincc) } };
 
 static int
 addUfuncs(PyObject* dictionary)
