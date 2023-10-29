@@ -12,14 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-python_sources = [
-  '__init__.py',
-]
-
-py.install_sources(
-  python_sources,
-  subdir: 'pyspecials'
-)
-
-subdir('_core')
-subdir('_internal')
+"""PySpecials internal utilities."""

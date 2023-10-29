@@ -14,12 +14,10 @@
 
 python_sources = [
   '__init__.py',
+  'numerics_testing.py',
 ]
 
 py.install_sources(
   python_sources,
-  subdir: 'pyspecials'
+  subdir: 'pyspecials/_internal'
 )
-
-subdir('_core')
-subdir('_internal')
