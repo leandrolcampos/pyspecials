@@ -19,9 +19,18 @@ the main `pyspecials` namespace - use that instead.
 
 """
 
-from pyspecials._core.toms708 import betainc, betaincc
+from pyspecials._core.toms708 import (
+    ibeta,
+    ibetac,
+    lbeta,
+    lbeta_correction,
+    lgamma_difference,
+)
 
 __all__ = [
-    "betainc",
-    "betaincc",
+    "ibeta",
+    "ibetac",
+    "lbeta",
+    "lbeta_correction",
+    "lgamma_difference",
 ]

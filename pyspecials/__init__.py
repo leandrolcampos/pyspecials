@@ -14,9 +14,12 @@
 
 """PySpecials"""
 
-from pyspecials._core import betainc, betaincc
+from pyspecials._core import ibeta, ibetac, lbeta, lbeta_correction, lgamma_difference
 
 __all__ = [
-    "betainc",
-    "betaincc",
+    "ibeta",
+    "ibetac",
+    "lbeta",
+    "lbeta_correction",
+    "lgamma_difference",
 ]

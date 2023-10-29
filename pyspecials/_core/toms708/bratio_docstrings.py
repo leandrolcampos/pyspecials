@@ -18,7 +18,7 @@ import argparse
 import os
 import textwrap
 
-MODULE_NAME = "tosm708"
+MODULE_NAME = "toms708"
 
 docdict: dict[str, str] = {}
 
@@ -28,9 +28,9 @@ def add_doc(name: str, doc: str) -> None:
 
 
 add_doc(
-    "betainc",
+    "ibeta",
     r"""
-    betainc(a, b, x, out=None)
+    ibeta(a, b, x, out=None)
 
     Regularized incomplete beta function.
 
@@ -43,27 +43,25 @@ add_doc(
 
     for :math:`0 \leq x \leq 1`.
 
-    This function is the cumulative distribution function for the beta
-    distribution; its range is [0, 1].
-
     Parameters
     ----------
     a, b : array_like
-           Positive, real-valued parameters
+        Positive, real-valued parameters.
     x : array_like
         Real-valued such that :math:`0 \leq x \leq 1`,
-        the upper limit of integration
+        the upper limit of integration.
     out : ndarray, optional
-        Optional output array for the function values
+        Optional output array for the function values.
 
     Returns
     -------
     scalar or ndarray
-        Value of the regularized incomplete beta function
+        Value of the regularized incomplete beta function.
 
     See Also
     --------
-    betaincc : complement of the regularized incomplete beta function
+    ibetac : The complement of the regularized incomplete beta function.
+    lbeta :  The natural logarithm of absolute value of beta function.
 
     References
     ----------
@@ -75,9 +73,9 @@ add_doc(
 
 
 add_doc(
-    "betaincc",
+    "ibetac",
     r"""
-    betaincc(a, b, x, out=None)
+    ibetac(a, b, x, out=None)
 
     Complement of the regularized incomplete beta function.
 
@@ -95,26 +93,113 @@ add_doc(
     Parameters
     ----------
     a, b : array_like
-           Positive, real-valued parameters
+        Positive, real-valued parameters.
     x : array_like
         Real-valued such that :math:`0 \leq x \leq 1`,
-        the upper limit of integration
+        the upper limit of integration.
     out : ndarray, optional
-        Optional output array for the function values
+        Optional output array for the function values.
 
     Returns
     -------
     scalar or ndarray
-        Value of the regularized incomplete beta function
+        Value of the complement the regularized incomplete beta function.
 
     See Also
     --------
-    betainc : regularized incomplete beta function
+    ibeta : The regularized incomplete beta function.
+    lbeta :  The natural logarithm of absolute value of beta function.
 
     References
     ----------
     .. [1] NIST Digital Library of Mathematical Functions
            https://dlmf.nist.gov/8.17
+
+    """,
+)
+
+
+add_doc(
+    "lbeta",
+    r"""
+    lbeta(a, b, out=None)
+
+    Natural logarithm of beta function.
+
+    Computes ``ln(abs(beta(a, b)))`` accurately.
+
+    Parameters
+    ----------
+    a, b : array_like
+        Positive, real-valued parameters.
+    out : ndarray, optional
+        Optional output array for function values.
+
+    Returns
+    -------
+    scalar or ndarray
+        Value of the lbeta function.
+
+    See Also
+    --------
+    ibeta : The regularized incomplete beta function.
+    ibetac : The complement of the regularized incomplete beta function.
+
+    """,
+)
+
+
+add_doc(
+    "lbeta_correction",
+    r"""
+    lbeta_correction(a, b, out=None)
+
+    Error of the Stirling approximation to ``lbeta(a, b)`` for ``a, b >= 8``.
+
+    Parameters
+    ----------
+    a, b : array_like
+        Real-valued parameters greater than or equal to 8.
+    out : ndarray, optional
+        Optional output array for function values.
+
+    Returns
+    -------
+    scalar or ndarray
+        Value of the lbeta_correction function.
+
+    See Also
+    --------
+    lbeta :  The natural logarithm of absolute value of beta function.
+
+    """,
+)
+
+
+add_doc(
+    "lgamma_difference",
+    r"""
+    lgamma_difference(a, b, out=None)
+
+    Difference between the natural logarithms of two gamma functions.
+
+    Computes ``ln(abs(gamma(b))) - ln(abs(gamma(a + b)))`` accurately.
+
+    Parameters
+    ----------
+    a, b : array_like
+        Real-valued parameters.
+    out : ndarray, optional
+        Optional output array for function values.
+
+    Returns
+    -------
+    scalar or ndarray
+        Value of the lgamma_difference function.
+
+    See Also
+    --------
+    lbeta :  The natural logarithm of absolute value of beta function.
 
     """,
 )
