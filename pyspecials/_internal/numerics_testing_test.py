@@ -12,13 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-python_sources = [
-  '__init__.py',
-  'numerics_testing_test.py',
-  'numerics_testing.py',
-]
+"""Tests for the numerics testing utilities."""
 
-py.install_sources(
-  python_sources,
-  subdir: 'pyspecials/_internal'
-)
+import numpy as np
+
+from pyspecials._internal.numerics_testing import relative_error
+
+
+def test_relative_error() -> None:
+    result = np.array([0.0, 1.1, 2.0, 3.0])
+    truth = np.array([0.0, 1.0, 0.0, 3.0])
+    expected = np.array([0.0, 0.1, np.inf, 0.0])
+
+    actual = relative_error(result, truth)
+    np.testing.assert_allclose(actual, expected, rtol=1e-15, atol=0.0)
