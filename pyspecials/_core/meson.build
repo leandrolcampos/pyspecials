@@ -36,9 +36,12 @@ py.extension_module('toms708',
   subdir: 'pyspecials/_core'
 )
 
+python_sources = [
+  '__init__.py',
+  'typing.py',
+]
+
 py.install_sources(
-  [
-    '__init__.py',
-  ],
+  python_sources,
   subdir: 'pyspecials/_core'
 )
