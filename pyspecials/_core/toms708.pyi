@@ -12,28 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Static type annotations."""
+"""Mypy stub file for `toms` module."""
 
-import numpy as np
+from pyspecials._core.typing import Array, ArrayLike
 
-__all__ = [
-    "Array",
-    "ArrayLike",
-]
-
-
-# Annotation for NumPy array.
-Array = np.ndarray
-
-# Annotation for any value that is safe to implicitly cast to a NumPy array.
-ArrayLike = (
-    Array
-    | bool
-    | int
-    | float
-    | np.bool_
-    | np.int32
-    | np.int64
-    | np.float32
-    | np.float64
-)
+def ibeta(
+    a: ArrayLike, b: ArrayLike, x: ArrayLike, out: None | Array = ...
+) -> ArrayLike: ...
+def ibetac(
+    a: ArrayLike, b: ArrayLike, x: ArrayLike, out: None | Array = ...
+) -> ArrayLike: ...
+def lbeta(a: ArrayLike, b: ArrayLike, out: None | Array = ...) -> ArrayLike: ...
+def lbeta_correction(
+    a: ArrayLike, b: ArrayLike, out: None | Array = ...
+) -> ArrayLike: ...
+def lgamma_difference(
+    a: ArrayLike, b: ArrayLike, out: None | Array = ...
+) -> ArrayLike: ...

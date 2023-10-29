@@ -50,12 +50,12 @@ add_doc(
     x : array_like
         Real-valued such that :math:`0 \leq x \leq 1`,
         the upper limit of integration.
-    out : ndarray, optional
+    out : array, optional
         Optional output array for the function values.
 
     Returns
     -------
-    scalar or ndarray
+    array_like
         Value of the regularized incomplete beta function.
 
     See Also
@@ -97,12 +97,12 @@ add_doc(
     x : array_like
         Real-valued such that :math:`0 \leq x \leq 1`,
         the upper limit of integration.
-    out : ndarray, optional
+    out : array, optional
         Optional output array for the function values.
 
     Returns
     -------
-    scalar or ndarray
+    array_like
         Value of the complement the regularized incomplete beta function.
 
     See Also
@@ -132,12 +132,12 @@ add_doc(
     ----------
     a, b : array_like
         Positive, real-valued parameters.
-    out : ndarray, optional
+    out : array, optional
         Optional output array for function values.
 
     Returns
     -------
-    scalar or ndarray
+    array_like
         Value of the lbeta function.
 
     See Also
@@ -160,12 +160,12 @@ add_doc(
     ----------
     a, b : array_like
         Real-valued parameters greater than or equal to 8.
-    out : ndarray, optional
+    out : array, optional
         Optional output array for function values.
 
     Returns
     -------
-    scalar or ndarray
+    array_like
         Value of the lbeta_correction function.
 
     See Also
@@ -189,12 +189,12 @@ add_doc(
     ----------
     a, b : array_like
         Real-valued parameters.
-    out : ndarray, optional
+    out : array, optional
         Optional output array for function values.
 
     Returns
     -------
-    scalar or ndarray
+    array_like
         Value of the lgamma_difference function.
 
     See Also
