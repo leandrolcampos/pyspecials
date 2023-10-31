@@ -11,6 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# Some of the code in this file is adapted from:
+#
+# numpy/numpy
+# Copyright (c) 2005-2023, NumPy Developers.
+# Licensed under BSD 3 clause.
+#
+# scipy/scipy:
+# Copyright (c) 2001-2002 Enthought, Inc. 2003-2023, SciPy Developers.
+# Licensed under BSD 3 clause.
 
 """Docstrings for ufuncs defined at `bratio.c`."""
 
@@ -126,7 +136,7 @@ add_doc(
 
     Natural logarithm of beta function.
 
-    Computes ``ln(abs(beta(a, b)))`` accurately.
+    Computes `ln(abs(beta(a, b)))` accurately.
 
     Parameters
     ----------
@@ -154,7 +164,7 @@ add_doc(
     r"""
     lbeta_correction(a, b, out=None)
 
-    Error of the Stirling approximation to ``lbeta(a, b)`` for ``a, b >= 8``.
+    Error of the Stirling approximation to `lbeta(a, b)` for `a, b >= 8`.
 
     Parameters
     ----------
@@ -183,7 +193,7 @@ add_doc(
 
     Difference between the natural logarithms of two gamma functions.
 
-    Computes ``ln(abs(gamma(b))) - ln(abs(gamma(a + b)))`` accurately.
+    Computes `ln(abs(gamma(b))) - ln(abs(gamma(a + b)))` accurately.
 
     Parameters
     ----------

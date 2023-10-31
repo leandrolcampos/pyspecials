@@ -11,6 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# Some of the code in this file is adapted from:
+#
+# tensorflow/probability:
+# Copyright 2018 The TensorFlow Probability Authors. All rights reserved.
+# Licensed under the Apache License, Version 2.0 (the "License").
 
 """Utilities for testing numerical accuracy."""
 

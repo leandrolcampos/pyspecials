@@ -11,6 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
+// Some of the code in this file is adapted from:
+//
+// numpy/numpy
+// Copyright (c) 2005-2023, NumPy Developers.
+// Licensed under BSD 3 clause.
 
 #ifndef PY_SSIZE_T_CLEAN
 #define PY_SSIZE_T_CLEAN
