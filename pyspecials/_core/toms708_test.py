@@ -28,16 +28,22 @@ SHAPE_MAGNITUDES = ("tiny", "small", "medium", "large", "huge")
 shape_cache: dict[tuple[str, np.dtype], Array] = {}
 
 
-def _get_shape(magnitude: str, dtype: np.dtype) -> Array:
+def _get_shape(magnitude: str, dtype: np.dtype, num: int = 30) -> Array:
     if magnitude in shape_cache:
         return shape_cache[(magnitude, dtype)]
 
     if magnitude == "tiny":
+        half_num = num // 2
         epsneg = np.finfo(dtype).epsneg
 
         base = 10.0
         y = np.logspace(
-            np.log10(epsneg), stop=0, num=20, base=base, endpoint=False, dtype=dtype
+            np.log10(epsneg),
+            stop=0,
+            num=num - half_num,
+            base=base,
+            endpoint=False,
+            dtype=dtype,
         )
         exponent = np.floor(np.log10(y))
         tiny_values = np.ceil(y * base ** np.abs(exponent)) * base**exponent
@@ -46,7 +52,9 @@ def _get_shape(magnitude: str, dtype: np.dtype) -> Array:
             (
                 tiny_values,
                 np.round(
-                    np.linspace(start=1, stop=10, num=30, endpoint=False, dtype=dtype),
+                    np.linspace(
+                        start=1, stop=10, num=half_num, endpoint=False, dtype=dtype
+                    ),
                     2,
                 ),
             )
@@ -56,25 +64,25 @@ def _get_shape(magnitude: str, dtype: np.dtype) -> Array:
         return shape
 
     if magnitude == "small":
-        shape = np.linspace(start=10, stop=100, num=50, endpoint=False, dtype=dtype)
+        shape = np.linspace(start=10, stop=100, num=num, endpoint=False, dtype=dtype)
         shape_cache[(magnitude, dtype)] = shape
         return shape
 
     if magnitude == "medium":
-        shape = np.linspace(start=100, stop=1_000, num=50, endpoint=False, dtype=dtype)
+        shape = np.linspace(start=100, stop=1_000, num=num, endpoint=False, dtype=dtype)
         shape_cache[(magnitude, dtype)] = shape
         return shape
 
     if magnitude == "large":
         shape = np.linspace(
-            start=1_000, stop=10_000, num=50, endpoint=False, dtype=dtype
+            start=1_000, stop=10_000, num=num, endpoint=False, dtype=dtype
         )
         shape_cache[(magnitude, dtype)] = shape
         return shape
 
     if magnitude == "huge":
         shape = np.linspace(
-            start=10_000, stop=100_000, num=50, endpoint=False, dtype=dtype
+            start=10_000, stop=100_000, num=num, endpoint=False, dtype=dtype
         )
         shape_cache[(magnitude, dtype)] = shape
         return shape
