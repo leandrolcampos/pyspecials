@@ -15,12 +15,22 @@
 """Tests for the procedures in `toms708` module."""
 
 import itertools
+from typing import Any
 
 import mpmath as mp  # type: ignore
 import numpy as np
 import pytest
+from rpy2 import robjects as ro
+from rpy2.robjects import numpy2ri as ro_numpy2ri
+from rpy2.robjects.packages import importr as ro_importr
 
-from pyspecials._core.toms708 import lbeta, lbeta_correction, lgamma_difference
+from pyspecials._core.toms708 import (
+    ibeta,
+    ibetac,
+    lbeta,
+    lbeta_correction,
+    lgamma_difference,
+)
 from pyspecials._core.typing import Array
 
 SHAPE_MAGNITUDES = ("tiny", "small", "medium", "large", "huge")
@@ -28,7 +38,20 @@ SHAPE_MAGNITUDES = ("tiny", "small", "medium", "large", "huge")
 shape_cache: dict[tuple[str, np.dtype], Array] = {}
 
 
-def _get_shape(magnitude: str, dtype: np.dtype, num: int) -> Array:
+def _get_x(dtype: np.dtype) -> np.ndarray:
+    epsneg = np.finfo(dtype).epsneg
+
+    base = 10.0
+    y = np.logspace(np.log10(epsneg), stop=-2, num=6, base=base, endpoint=False)
+    exponent = np.floor(np.log10(y))
+    tiny_values = np.ceil(y * base ** np.abs(exponent)) * base**exponent
+
+    values = np.arange(start=0.02, stop=0.98, step=0.02)
+
+    return np.concatenate((tiny_values, values, 1.0 - tiny_values[::-1]))
+
+
+def _get_shape(magnitude: str, dtype: np.dtype, num: int = 30) -> Array:
     if magnitude in shape_cache:
         return shape_cache[(magnitude, dtype)]
 
@@ -94,6 +117,76 @@ def _get_shape(magnitude: str, dtype: np.dtype, num: int) -> Array:
     raise ValueError(err_msg)
 
 
+@pytest.fixture(scope="module")
+def r_stats() -> Any:
+    return ro_importr("stats")
+
+
+@pytest.fixture(scope="module")
+def numpy_converter() -> Any:
+    return ro.default_converter + ro_numpy2ri.converter
+
+
+@pytest.mark.parametrize(
+    "a_magnitude, b_magnitude",
+    itertools.product(SHAPE_MAGNITUDES, SHAPE_MAGNITUDES),
+)
+def test_ibeta(
+    r_stats: Any, numpy_converter: Any, a_magnitude: str, b_magnitude: str
+) -> None:
+    space_a = _get_shape(a_magnitude, dtype=np.dtype("float64"))
+    space_b = _get_shape(b_magnitude, dtype=np.dtype("float64"))
+    space_x = _get_x(np.dtype("float64"))
+
+    a, b, x = (
+        np.asarray(arr)
+        for arr in zip(*list(itertools.product(space_a, space_b, space_x)), strict=True)
+    )
+
+    assert a.size == (space_a.size * space_b.size * space_x.size)
+    assert a.shape == b.shape
+    assert a.shape == x.shape
+
+    # Here we use the R language package `stats` because `mpmath.betainc` is very slow
+    # and does not always converge.
+    with numpy_converter.context():
+        expected = r_stats.pbeta(x, a, b)
+
+    actual = ibeta(a, b, x)
+
+    np.testing.assert_allclose(actual, expected, rtol=1e-14, atol=1e-20)
+
+
+@pytest.mark.parametrize(
+    "a_magnitude, b_magnitude",
+    itertools.product(SHAPE_MAGNITUDES, SHAPE_MAGNITUDES),
+)
+def test_ibetac(
+    r_stats: Any, numpy_converter: Any, a_magnitude: str, b_magnitude: str
+) -> None:
+    space_a = _get_shape(a_magnitude, dtype=np.dtype("float64"))
+    space_b = _get_shape(b_magnitude, dtype=np.dtype("float64"))
+    space_x = _get_x(np.dtype("float64"))
+
+    a, b, x = (
+        np.asarray(arr)
+        for arr in zip(*list(itertools.product(space_a, space_b, space_x)), strict=True)
+    )
+
+    assert a.size == (space_a.size * space_b.size * space_x.size)
+    assert a.shape == b.shape
+    assert a.shape == x.shape
+
+    # Here we use the R language package `stats` because `mpmath.betainc` is very slow
+    # and does not always converge.
+    with numpy_converter.context():
+        expected = r_stats.pbeta(x, a, b, lower_tail=False)
+
+    actual = ibetac(a, b, x)
+
+    np.testing.assert_allclose(actual, expected, rtol=1e-14, atol=1e-20)
+
+
 def _mp_lbeta(a: Array, b: Array) -> Array:
     ufunc_mp_lbeta = np.frompyfunc(
         lambda x, y: mp.log(mp.beta(x, y)),
@@ -112,8 +205,8 @@ def _mp_lbeta(a: Array, b: Array) -> Array:
     itertools.product(SHAPE_MAGNITUDES, SHAPE_MAGNITUDES),
 )
 def test_lbeta(a_magnitude: str, b_magnitude: str) -> None:
-    space_a = _get_shape(a_magnitude, dtype=np.dtype("float64"), num=30)
-    space_b = _get_shape(b_magnitude, dtype=np.dtype("float64"), num=30)
+    space_a = _get_shape(a_magnitude, dtype=np.dtype("float64"))
+    space_b = _get_shape(b_magnitude, dtype=np.dtype("float64"))
 
     a, b = (
         np.asarray(arr)
@@ -125,41 +218,6 @@ def test_lbeta(a_magnitude: str, b_magnitude: str) -> None:
 
     expected = _mp_lbeta(a, b)
     actual = lbeta(a, b)
-
-    np.testing.assert_allclose(actual, expected, rtol=1e-14, atol=0.0)
-
-
-def _mp_lgamma_difference(a: Array, b: Array) -> Array:
-    ufunc_mp_lgamma_difference = np.frompyfunc(
-        lambda x, y: mp.loggamma(y) - mp.loggamma(mp.mpf(x) + mp.mpf(y)),
-        nin=2,
-        nout=1,
-    )
-
-    with mp.workdps(50):
-        res = ufunc_mp_lgamma_difference(a, b)
-
-    return np.where(b < 8.0, np.nan, np.asarray(res, dtype=a.dtype))
-
-
-@pytest.mark.parametrize(
-    "a_magnitude, b_magnitude",
-    itertools.product(SHAPE_MAGNITUDES, SHAPE_MAGNITUDES),
-)
-def test_lgamma_difference(a_magnitude: str, b_magnitude: str) -> None:
-    space_a = _get_shape(a_magnitude, dtype=np.dtype("float64"), num=30)
-    space_b = _get_shape(b_magnitude, dtype=np.dtype("float64"), num=30)
-
-    a, b = (
-        np.asarray(arr)
-        for arr in zip(*list(itertools.product(space_a, space_b)), strict=True)
-    )
-
-    assert a.size == (space_a.size * space_b.size)
-    assert a.shape == b.shape
-
-    expected = _mp_lgamma_difference(a, b)
-    actual = lgamma_difference(a, b)
 
     np.testing.assert_allclose(actual, expected, rtol=1e-14, atol=0.0)
 
@@ -193,8 +251,8 @@ def _mp_lbeta_correction(a: Array, b: Array) -> Array:
     itertools.product(SHAPE_MAGNITUDES, SHAPE_MAGNITUDES),
 )
 def test_lbeta_correction(a_magnitude: str, b_magnitude: str) -> None:
-    space_a = _get_shape(a_magnitude, dtype=np.dtype("float64"), num=30)
-    space_b = _get_shape(b_magnitude, dtype=np.dtype("float64"), num=30)
+    space_a = _get_shape(a_magnitude, dtype=np.dtype("float64"))
+    space_b = _get_shape(b_magnitude, dtype=np.dtype("float64"))
 
     a, b = (
         np.asarray(arr)
@@ -206,5 +264,40 @@ def test_lbeta_correction(a_magnitude: str, b_magnitude: str) -> None:
 
     expected = _mp_lbeta_correction(a, b)
     actual = lbeta_correction(a, b)
+
+    np.testing.assert_allclose(actual, expected, rtol=1e-14, atol=0.0)
+
+
+def _mp_lgamma_difference(a: Array, b: Array) -> Array:
+    ufunc_mp_lgamma_difference = np.frompyfunc(
+        lambda x, y: mp.loggamma(y) - mp.loggamma(mp.mpf(x) + mp.mpf(y)),
+        nin=2,
+        nout=1,
+    )
+
+    with mp.workdps(50):
+        res = ufunc_mp_lgamma_difference(a, b)
+
+    return np.where(b < 8.0, np.nan, np.asarray(res, dtype=a.dtype))
+
+
+@pytest.mark.parametrize(
+    "a_magnitude, b_magnitude",
+    itertools.product(SHAPE_MAGNITUDES, SHAPE_MAGNITUDES),
+)
+def test_lgamma_difference(a_magnitude: str, b_magnitude: str) -> None:
+    space_a = _get_shape(a_magnitude, dtype=np.dtype("float64"))
+    space_b = _get_shape(b_magnitude, dtype=np.dtype("float64"))
+
+    a, b = (
+        np.asarray(arr)
+        for arr in zip(*list(itertools.product(space_a, space_b)), strict=True)
+    )
+
+    assert a.size == (space_a.size * space_b.size)
+    assert a.shape == b.shape
+
+    expected = _mp_lgamma_difference(a, b)
+    actual = lgamma_difference(a, b)
 
     np.testing.assert_allclose(actual, expected, rtol=1e-14, atol=0.0)
