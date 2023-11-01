@@ -20,7 +20,7 @@ import mpmath as mp  # type: ignore
 import numpy as np
 import pytest
 
-from pyspecials._core.toms708 import lbeta
+from pyspecials._core.toms708 import lbeta, lbeta_correction, lgamma_difference
 from pyspecials._core.typing import Array
 
 SHAPE_MAGNITUDES = ("tiny", "small", "medium", "large", "huge")
@@ -28,7 +28,7 @@ SHAPE_MAGNITUDES = ("tiny", "small", "medium", "large", "huge")
 shape_cache: dict[tuple[str, np.dtype], Array] = {}
 
 
-def _get_shape(magnitude: str, dtype: np.dtype, num: int = 30) -> Array:
+def _get_shape(magnitude: str, dtype: np.dtype, num: int) -> Array:
     if magnitude in shape_cache:
         return shape_cache[(magnitude, dtype)]
 
@@ -101,7 +101,7 @@ def _mp_lbeta(a: Array, b: Array) -> Array:
         nout=1,
     )
 
-    with mp.workdps(30):
+    with mp.workdps(50):
         res = ufunc_mp_lbeta(a, b)
 
     return np.asarray(res, dtype=a.dtype)
@@ -112,8 +112,8 @@ def _mp_lbeta(a: Array, b: Array) -> Array:
     itertools.product(SHAPE_MAGNITUDES, SHAPE_MAGNITUDES),
 )
 def test_lbeta(a_magnitude: str, b_magnitude: str) -> None:
-    space_a = _get_shape(a_magnitude, dtype=np.dtype("float64"))
-    space_b = _get_shape(b_magnitude, dtype=np.dtype("float64"))
+    space_a = _get_shape(a_magnitude, dtype=np.dtype("float64"), num=30)
+    space_b = _get_shape(b_magnitude, dtype=np.dtype("float64"), num=30)
 
     a, b = (
         np.asarray(arr)
@@ -126,4 +126,85 @@ def test_lbeta(a_magnitude: str, b_magnitude: str) -> None:
     expected = _mp_lbeta(a, b)
     actual = lbeta(a, b)
 
-    np.testing.assert_allclose(actual, expected, rtol=5e-14, atol=0.0)
+    np.testing.assert_allclose(actual, expected, rtol=1e-14, atol=0.0)
+
+
+def _mp_lgamma_difference(a: Array, b: Array) -> Array:
+    ufunc_mp_lgamma_difference = np.frompyfunc(
+        lambda x, y: mp.loggamma(y) - mp.loggamma(mp.mpf(x) + mp.mpf(y)),
+        nin=2,
+        nout=1,
+    )
+
+    with mp.workdps(50):
+        res = ufunc_mp_lgamma_difference(a, b)
+
+    return np.where(b < 8.0, np.nan, np.asarray(res, dtype=a.dtype))
+
+
+@pytest.mark.parametrize(
+    "a_magnitude, b_magnitude",
+    itertools.product(SHAPE_MAGNITUDES, SHAPE_MAGNITUDES),
+)
+def test_lgamma_difference(a_magnitude: str, b_magnitude: str) -> None:
+    space_a = _get_shape(a_magnitude, dtype=np.dtype("float64"), num=30)
+    space_b = _get_shape(b_magnitude, dtype=np.dtype("float64"), num=30)
+
+    a, b = (
+        np.asarray(arr)
+        for arr in zip(*list(itertools.product(space_a, space_b)), strict=True)
+    )
+
+    assert a.size == (space_a.size * space_b.size)
+    assert a.shape == b.shape
+
+    expected = _mp_lgamma_difference(a, b)
+    actual = lgamma_difference(a, b)
+
+    np.testing.assert_allclose(actual, expected, rtol=1e-14, atol=0.0)
+
+
+def _mp_lbeta_correction(a: Array, b: Array) -> Array:
+    _a, _b = np.minimum(a, b), np.maximum(a, b)
+
+    def _impl(x: Array, y: Array) -> Array:
+        lbeta = mp.log(mp.beta(x, y))
+        e = 0.5 * (mp.log(2 * mp.pi) - mp.log(y))
+        h = mp.mpf(x) / mp.mpf(y)
+        c = h / (1.0 + h)
+        u = -(mp.mpf(x) - 0.5) * mp.log(c)
+        v = mp.mpf(y) * mp.log(1.0 + h)
+        return lbeta - e + u + v
+
+    ufunc_mp_lbeta_correction = np.frompyfunc(
+        lambda x, y: _impl(x, y),
+        nin=2,
+        nout=1,
+    )
+
+    with mp.workdps(50):
+        res = ufunc_mp_lbeta_correction(_a, _b)
+
+    return np.where((a < 8.0) | (b < 8.0), np.nan, np.asarray(res, dtype=a.dtype))
+
+
+@pytest.mark.parametrize(
+    "a_magnitude, b_magnitude",
+    itertools.product(SHAPE_MAGNITUDES, SHAPE_MAGNITUDES),
+)
+def test_lbeta_correction(a_magnitude: str, b_magnitude: str) -> None:
+    space_a = _get_shape(a_magnitude, dtype=np.dtype("float64"), num=30)
+    space_b = _get_shape(b_magnitude, dtype=np.dtype("float64"), num=30)
+
+    a, b = (
+        np.asarray(arr)
+        for arr in zip(*list(itertools.product(space_a, space_b)), strict=True)
+    )
+
+    assert a.size == (space_a.size * space_b.size)
+    assert a.shape == b.shape
+
+    expected = _mp_lbeta_correction(a, b)
+    actual = lbeta_correction(a, b)
+
+    np.testing.assert_allclose(actual, expected, rtol=1e-14, atol=0.0)

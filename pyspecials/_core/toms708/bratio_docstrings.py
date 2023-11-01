@@ -198,7 +198,7 @@ add_doc(
     Parameters
     ----------
     a, b : array_like
-        Real-valued parameters.
+        Positive, real-valued parameters. `b` must be greater than or equal to 8.
     out : array, optional
         Optional output array for function values.
 

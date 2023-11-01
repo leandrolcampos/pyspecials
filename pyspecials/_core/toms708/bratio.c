@@ -156,22 +156,12 @@ lbeta_correction(double a, double b)
 static double
 lgamma_difference(double a, double b)
 {
-  if (isnan(a) || isnan(b)) {
+  if (isnan(a) || a < 0.0) {
     return NAN;
   }
 
-  if (b < 8.0) {
-    return lgamma(b) - lgamma(a + b);
-  }
-
-  double apb = a + b;
-  if (apb <= 0.0 && apb == trunc(apb)) {
-    /*
-     * Special case: Negative integer argument in lgamma(a + b).
-     * In this case, lgamma(a + b) returns +Inf, and because b >= 8,
-     * lgamma(b) is finite. Therefore, lgamma(b) - lgamma(a + b) = -Inf.
-     */
-    return -INFINITY;
+  if (isnan(b) || b < 8.0) {
+    return NAN;
   }
 
   return algdiv_(&a, &b);
