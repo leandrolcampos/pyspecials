@@ -67,10 +67,10 @@ ibeta(double a, double b, double x)
 
   double y = 1.0 - x;
   double w = 0.0;
-  double w1 = 0.0;
+  double wc = 0.0;
   int ierr = 0;
 
-  bratio_(&a, &b, &x, &y, &w, &w1, &ierr);
+  bratio_(&a, &b, &x, &y, &w, &wc, &ierr);
 
   if (ierr != 0) {
     return NAN;
@@ -88,16 +88,16 @@ ibetac(double a, double b, double x)
 
   double y = 1.0 - x;
   double w = 0.0;
-  double w1 = 0.0;
+  double wc = 0.0;
   int ierr = 0;
 
-  bratio_(&a, &b, &x, &y, &w, &w1, &ierr);
+  bratio_(&a, &b, &x, &y, &w, &wc, &ierr);
 
   if (ierr != 0) {
     return NAN;
   }
 
-  return w1;
+  return wc;
 }
 
 static double
@@ -361,7 +361,7 @@ UFUNC_DESCRIPTOR_t ufunc_descriptors[] = { { FUNC_ARRAY_NAME(ibeta),
                                              1,
                                              "ibeta",
                                              UFUNC_DOC(ibeta) },
-                                           { FUNC_ARRAY_NAME(ibeta),
+                                           { FUNC_ARRAY_NAME(ibetac),
                                              double_4_times,
                                              1,
                                              3,
