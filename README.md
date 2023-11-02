@@ -80,9 +80,9 @@ array([[0.49207421, 0.1877476 , 0.45864671],
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| ibeta(a, b, x[, out]) | Regularized incomplete beta function | [ACM TOMS 708](https://dl.acm.org/doi/10.1145/131766.131776) |
-| ibetac(a, b, x[, out]) | Complement of the regularized incomplete beta function | [ACM TOMS 708](https://dl.acm.org/doi/10.1145/131766.131776) |
-| lbeta(a, b[, out]) | Natural logarithm of absolute value of beta function | [ACM TOMS 708](https://dl.acm.org/doi/10.1145/131766.131776) |
+| `ibeta(a, b, x[, out])` | Regularized incomplete beta function | [ACM TOMS 708](https://dl.acm.org/doi/10.1145/131766.131776) |
+| `ibetac(a, b, x[, out])` | Complement of the regularized incomplete beta function | [ACM TOMS 708](https://dl.acm.org/doi/10.1145/131766.131776) |
+| `lbeta(a, b[, out])` | Natural logarithm of absolute value of beta function | [ACM TOMS 708](https://dl.acm.org/doi/10.1145/131766.131776) |
 
 ## Contributing
 
