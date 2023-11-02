@@ -20,9 +20,9 @@ from typing import Any
 import mpmath as mp  # type: ignore
 import numpy as np
 import pytest
-from rpy2 import robjects as ro
-from rpy2.robjects import numpy2ri as ro_numpy2ri
-from rpy2.robjects.packages import importr as ro_importr
+from rpy2 import robjects as ro  # type: ignore
+from rpy2.robjects import numpy2ri as ro_numpy2ri  # type: ignore
+from rpy2.robjects.packages import importr as ro_importr  # type: ignore
 
 from pyspecials._core.toms708 import (
     ibeta,
