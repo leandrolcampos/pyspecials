@@ -14,7 +14,7 @@
 
 """PySpecials"""
 
-from pyspecials._core import ibeta, ibetac, lbeta, lbeta_correction, lgamma_difference
+from ._core import ibeta, ibetac, lbeta, lbeta_correction, lgamma_difference
 
 __all__ = [
     "ibeta",
