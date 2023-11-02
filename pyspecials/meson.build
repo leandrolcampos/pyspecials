@@ -18,7 +18,8 @@ python_sources = [
 
 py.install_sources(
   python_sources,
-  subdir: 'pyspecials'
+  subdir: 'pyspecials',
+  pure: false,
 )
 
 subdir('_core')
