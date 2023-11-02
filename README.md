@@ -54,7 +54,7 @@ python -m pip install .
 If you want to test PySpecials, you also need to install the R language in your system. PySpecials is tested with R version 4.3.1. After cloning the repository and installing the building tools and the R language, execute the following commands to install PySpecials and test it:
 
 ```
-python -m pip install --editable ".[test]"
+python -m pip install ".[test]"
 pytest
 ```
 
