@@ -147,8 +147,10 @@ def test_ibeta(
     assert a.shape == b.shape
     assert a.shape == x.shape
 
-    # Here we use the R language package `stats` because `mpmath.betainc` is very slow
-    # and does not always converge.
+    # Here we use the R function `stats::pbeta` because `mpmath.betainc` is very slow
+    # and does not always converge. This function is based on a C translation of ACM
+    # TOMS 708:
+    # https://svn.r-project.org/R/trunk/src/nmath/toms708.c
     with numpy_converter.context():
         expected = r_stats.pbeta(x, a, b)
 
@@ -177,8 +179,10 @@ def test_ibetac(
     assert a.shape == b.shape
     assert a.shape == x.shape
 
-    # Here we use the R language package `stats` because `mpmath.betainc` is very slow
-    # and does not always converge.
+    # Here we use the R function `stats::pbeta` because `mpmath.betainc` is very slow
+    # and does not always converge. This function is based on a C translation of ACM
+    # TOMS 708:
+    # https://svn.r-project.org/R/trunk/src/nmath/toms708.c
     with numpy_converter.context():
         expected = r_stats.pbeta(x, a, b, lower_tail=False)
 
