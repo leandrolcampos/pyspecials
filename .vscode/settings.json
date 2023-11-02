@@ -8,5 +8,6 @@
         "editor.defaultFormatter": "ms-python.black-formatter",
     },
     "C_Cpp.clang_format_fallbackStyle": "Mozilla",
-    "fortran.formatting.formatter": "findent"
+    "fortran.formatting.formatter": "findent",
+    "mypy-type-checker.reportingScope": "workspace"
 }
