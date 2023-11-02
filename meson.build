@@ -37,4 +37,4 @@ np_incdir = run_command(py,
 
 np_inc = include_directories(np_incdir)
 
-subdir('pyspecials')
+subdir('src/pyspecials')
