@@ -1,8 +1,8 @@
 [build-system]
 requires = [
-    "cython >= 3.0.4",
-    "meson >= 1.2.3",
-    "meson-python >= 0.14.0",
+    "cython>=3.0.4",
+    "meson>=1.2.3",
+    "meson-python>=0.14.0",
     "numpy>=1.26.1",
 ]
 build-backend = "mesonpy"
@@ -118,7 +118,7 @@ unfixable = [
 known-first-party = ["pyspecials"]
 
 [tool.ruff.flake8-tidy-imports]
-ban-relative-imports = "parents"
+ban-relative-imports = "all"
 
 [tool.ruff.per-file-ignores]
 # Tests can use magic values, assertions, and relative imports

@@ -19,7 +19,7 @@ the main `pyspecials` namespace - use that instead.
 
 """
 
-from .toms708 import (
+from pyspecials._core.toms708 import (
     ibeta,
     ibetac,
     lbeta,
