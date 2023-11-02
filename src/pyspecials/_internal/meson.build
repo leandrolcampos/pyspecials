@@ -14,7 +14,6 @@
 
 python_sources = [
   '__init__.py',
-  'numerics_testing_test.py',
   'numerics_testing.py',
 ]
 

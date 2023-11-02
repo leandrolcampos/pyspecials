@@ -38,7 +38,6 @@ py.extension_module('toms708',
 
 python_sources = [
   '__init__.py',
-  'toms708_test.py',
   'toms708.pyi',
   'typing.py',
 ]
