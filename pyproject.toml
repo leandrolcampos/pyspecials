@@ -125,13 +125,14 @@ ban-relative-imports = "all"
 "**/*_test.py" = ["PLR2004", "S101", "TID252"]
 
 [tool.coverage.run]
-source = ["pyspecials"]
+source_pkgs = ["pyspecials", "tests"]
 branch = true
 parallel = true
 omit = []
 
 [tool.coverage.paths]
-source = ["pyspecials"]
+hotmart_ml_test = ["src/pyspecials", "*/pyspecials/src/pyspecials"]
+tests = ["tests", "*/pyspecials/tests"]
 
 [tool.coverage.report]
 exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
