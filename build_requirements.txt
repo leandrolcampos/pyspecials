@@ -1,0 +1,5 @@
+cython>=3.0.4
+meson>=1.2.3
+meson-python>=0.14.0
+numpy>=1.26.1
+ninja>=1.11.1
